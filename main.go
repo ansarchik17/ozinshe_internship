@@ -29,10 +29,15 @@ func main() {
 		panic(err)
 	}
 	usersRepository := repositories.NewUsersRepository(connection)
-	userHandler := handlers.NewUserHandlers(usersRepository)
 	authHandler := handlers.NewAuthentificationHandler(usersRepository)
-	r.POST("/create", userHandler.SignUp)
+	userHandler := handlers.NewUserProfileHandler(usersRepository)
+	//Authorization handlers
+	r.POST("/create", authHandler.SignUp)
 	r.POST("/signIn", authHandler.SigIn)
+	r.POST("/logOut", authHandler.Logout)
+
+	r.POST("user/profile", userHandler.CreateUserProfile)
+	r.GET("user/profile/:id", userHandler.GetUserProfile)
 	r.Run(":8010")
 }
 

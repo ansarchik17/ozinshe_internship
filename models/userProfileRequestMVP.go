@@ -1,6 +1,7 @@
 package models
 
-type UserProfileRequest struct {
-	Id   int
-	Name string
+type СreateUserProfileRequest struct {
+	Id             int    `json:"id"`
+	PrivateInfo    string `json:"private_info"`
+	ChangePassword string `json:"change_password"`
 }

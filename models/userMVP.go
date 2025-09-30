@@ -1,6 +1,6 @@
 package models
 
-type User struct {
-	Id    int
-	Email string
+type UserMVP struct {
+	Id    int    `json:"id"`
+	Email string `json:"email"`
 }
