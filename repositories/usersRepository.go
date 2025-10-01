@@ -36,7 +36,7 @@ func (r *UsersRepository) FindByEmail(c context.Context, email string) (models.S
 
 func (r *UsersRepository) FindById(c context.Context, id int) (models.SignUpUser, error) {
 	var user models.SignUpUser
-	row := r.db.QueryRow(c, "select id, email from users where id = $1", id)
+	row := r.db.QueryRow(c, "select id, email, password_hash from users where id = $1", id)
 	err := row.Scan(&user.Id, &user.Email, &user.PasswordHash)
 	if err != nil {
 		return models.SignUpUser{}, err
@@ -62,4 +62,26 @@ func (r *UsersRepository) FindByIdProfile(c context.Context, profileId int) (mod
 		return models.UserProfile{}, err
 	}
 	return user, nil
+}
+
+func (r *UsersRepository) UpdateProfile(c context.Context, id int, updatedProfile models.UserProfile) error {
+	tx, err := r.db.Begin(c)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(c, "update profiles set name = $1, birthdate = $2, language = $3, phone_number = $4, email = $5 where id = $6",
+		updatedProfile.Name, updatedProfile.Birthdate, updatedProfile.Language, updatedProfile.PhoneNumber, updatedProfile.User.Email, id)
+	if err != nil {
+		return err
+	}
+	err = tx.Commit(c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *UsersRepository) ChangePassword(c context.Context, id int, newHash string) error {
+	_, err := r.db.Exec(c, "update users set password_hash = $1 where id = $2", newHash, id)
+	return err
 }

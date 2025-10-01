@@ -38,6 +38,8 @@ func main() {
 
 	r.POST("user/profile", userHandler.CreateUserProfile)
 	r.GET("user/profile/:id", userHandler.GetUserProfile)
+	r.PUT("user/profile/:id", userHandler.UpdateUserProfile)
+	r.PATCH("user/profile/:id", userHandler.ChangePassword)
 	r.Run(":8010")
 }
 
