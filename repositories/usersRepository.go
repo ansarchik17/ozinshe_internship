@@ -57,7 +57,7 @@ func (r *UsersRepository) CreateProfile(c context.Context, user models.UserProfi
 
 func (r *UsersRepository) FindByIdProfile(c context.Context, profileId int) (models.UserProfile, error) {
 	var user models.UserProfile
-	err := r.db.QueryRow(c, "select name, birthdate, language, phone_number, user from profiles where id = $1", profileId).Scan(&user.Id)
+	err := r.db.QueryRow(c, "select id, name, birthdate, language, phone_number, user_id, email from profiles where id = $1", profileId).Scan(&user.Id, &user.Name, &user.Birthdate, &user.Language, &user.PhoneNumber, &user.User.Id, &user.User.Email)
 	if err != nil {
 		return models.UserProfile{}, err
 	}
