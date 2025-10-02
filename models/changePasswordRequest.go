@@ -1,5 +1,5 @@
 package models
 
-type ChangePasswordRequest struct {
-	Password string `json:"password"`
+type ChangePasswordStruct struct {
+	NewPassword string `json:"new_password"`
 }

@@ -103,36 +103,34 @@ func (handler *UserProfileHandler) UpdateUserProfile(c *gin.Context) {
 }
 
 func (handler *UserProfileHandler) ChangePassword(c *gin.Context) {
+	// Get user ID from path parameter
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user id"})
+		c.JSON(http.StatusBadRequest, models.NewApiError("Invalid user id"))
 		return
 	}
 
-	var req models.SignUpUser
+	// Parse request body
+	var req struct {
+		NewPassword string `json:"new_password"`
+	}
 	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		c.JSON(http.StatusBadRequest, models.NewApiError("Invalid payload"))
 		return
 	}
 
-	newHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	// Hash the new password
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		c.JSON(http.StatusInternalServerError, models.NewApiError("Failed to hash password"))
 		return
 	}
 
-	user, err := handler.userRepo.FindById(c, id)
+	// Update in DB
+	err = handler.userRepo.UpdatePassword(c, id, string(passwordHash))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.NewApiError("User not found"))
-		return
-	}
-
-	user.PasswordHash = string(newHash)
-
-	err = handler.userRepo.ChangePassword(c, id, string(newHash))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update password"})
+		c.JSON(http.StatusInternalServerError, models.NewApiError("Failed to update password"))
 		return
 	}
 
