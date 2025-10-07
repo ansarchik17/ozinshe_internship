@@ -103,7 +103,7 @@ func (handler *UserProfileHandler) UpdateUserProfile(c *gin.Context) {
 }
 
 func (handler *UserProfileHandler) ChangePassword(c *gin.Context) {
-	// Get user ID from path parameter
+
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -111,7 +111,6 @@ func (handler *UserProfileHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	// Parse request body
 	var req struct {
 		NewPassword string `json:"new_password"`
 	}
@@ -120,14 +119,12 @@ func (handler *UserProfileHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	// Hash the new password
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.NewApiError("Failed to hash password"))
 		return
 	}
 
-	// Update in DB
 	err = handler.userRepo.UpdatePassword(c, id, string(passwordHash))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.NewApiError("Failed to update password"))

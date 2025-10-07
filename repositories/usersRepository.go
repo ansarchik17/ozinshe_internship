@@ -82,8 +82,9 @@ func (r *UsersRepository) UpdateProfile(c context.Context, id int, updatedProfil
 }
 
 func (r *UsersRepository) UpdatePassword(c context.Context, id int, newPasswordHash string) error {
-	_, err := r.db.Exec(c,
-		"update users set password_hash = $1 where id = $2",
-		newPasswordHash, id)
-	return err
+	_, err := r.db.Exec(c, "update users set password_hash = $1 where id = $2", newPasswordHash, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
