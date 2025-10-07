@@ -29,8 +29,10 @@ func main() {
 		panic(err)
 	}
 	usersRepository := repositories.NewUsersRepository(connection)
+	moviesRepository := repositories.NewMovieRepository(connection)
 	authHandler := handlers.NewAuthentificationHandler(usersRepository)
 	userHandler := handlers.NewUserProfileHandler(usersRepository)
+	movieHandler := handlers.NewMovieHandler(moviesRepository)
 	//Authorization handlers
 	r.POST("/create", authHandler.SignUp)
 	r.POST("/signIn", authHandler.SigIn)
@@ -40,6 +42,8 @@ func main() {
 	r.GET("user/profile/:id", userHandler.GetUserProfile)
 	r.PUT("user/profile/:id", userHandler.UpdateUserProfile)
 	r.PATCH("user/:id/password", userHandler.ChangePassword)
+	//Movie handlers
+	r.POST("/create/movies", movieHandler.CreatMovie)
 	r.Run(":8010")
 }
 
