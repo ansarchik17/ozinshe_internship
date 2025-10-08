@@ -17,7 +17,24 @@ func NewMovieRepository(connection *pgxpool.Pool) *MoviesRepository {
 
 func (r *MoviesRepository) Create(c context.Context, movie models.MovieDTO) (int, error) {
 	var id int
-	err := r.db.QueryRow(c, "insert into movies(name, description, director, producer, year, timing, trend, favorite, movieType, keyWords, watchCount, seasonCount, seriesCount, createdDate, lastModifiedDate) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id", movie.Name, movie.CreatedDate, movie.SeasonCount, movie.LastModifiedDate, movie.WatchCount, movie.KeyWords, movie.MovieType, movie.Timing, movie.Description, movie.Director, movie.Producer, movie.Year, movie.Trend, movie.Favorite, movie.MovieType).Scan(&id)
+	err := r.db.QueryRow(c,
+		"INSERT INTO movies(name, description, director, producer, year, timing, trend, favorite, movie_type, key_words, watch_count, season_count, series_count, created_date, last_modified_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id",
+		movie.Name,
+		movie.Description,
+		movie.Director,
+		movie.Producer,
+		movie.Year,
+		movie.Timing,
+		movie.Trend,
+		movie.Favorite,
+		movie.MovieType,
+		movie.KeyWords,
+		movie.WatchCount,
+		movie.SeasonCount,
+		movie.SeriesCount,
+		movie.CreatedDate,
+		movie.LastModifiedDate,
+	).Scan(&id)
 	if err != nil {
 		return 0, err
 	}

@@ -43,7 +43,7 @@ func main() {
 	r.PUT("user/profile/:id", userHandler.UpdateUserProfile)
 	r.PATCH("user/:id/password", userHandler.ChangePassword)
 	//Movie handlers
-	r.POST("/create/movies", movieHandler.CreatMovie)
+	r.POST("/create/movies", movieHandler.CreateMovie)
 	r.Run(":8010")
 }
 

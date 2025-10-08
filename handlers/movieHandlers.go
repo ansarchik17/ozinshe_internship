@@ -16,7 +16,7 @@ func NewMovieHandler(movieRepo *repositories.MoviesRepository) *MoviesHandler {
 	return &MoviesHandler{movieRepo: movieRepo}
 }
 
-func (handler *MoviesHandler) CreatMovie(c *gin.Context) {
+func (handler *MoviesHandler) CreateMovie(c *gin.Context) {
 	var request models.MovieDTO
 	err := c.BindJSON(&request)
 	if err != nil {
