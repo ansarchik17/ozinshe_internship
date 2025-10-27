@@ -30,6 +30,8 @@ func main() {
 	}
 	usersRepository := repositories.NewUsersRepository(connection)
 	moviesRepository := repositories.NewMovieRepository(connection)
+	categoryRepository := repositories.NewCategoryRepository(connection)
+	categoryHandler := handlers.NewCategoryHandler(categoryRepository)
 	authHandler := handlers.NewAuthentificationHandler(usersRepository)
 	userHandler := handlers.NewUserProfileHandler(usersRepository)
 	movieHandler := handlers.NewMovieHandler(moviesRepository)
@@ -44,6 +46,9 @@ func main() {
 	r.PATCH("user/:id/password", userHandler.ChangePassword)
 	//Movie handlers
 	r.POST("/create/movies", movieHandler.CreateMovie)
+
+	//CategoryDTO
+	r.POST("/categories/DTO", categoryHandler.CreateCategory)
 	r.Run(":8010")
 }
 
